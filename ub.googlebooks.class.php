@@ -1,6 +1,6 @@
 <?php
 
-class GoogleBooks {
+class GoogleBooks implements IUBPlugin {
 
 	public static function forme($onlineidentifier) {
 		return false;
@@ -8,6 +8,14 @@ class GoogleBooks {
 
 	public static function doesBookMatch($key, $val, $matchagainst) {
 		return false;
+	}
+
+	public function __construct($onlineidentifier) {
+		;
+	}
+
+	public function saveBibTeXtoDatabase($dbpath) {
+		;
 	}
 
 }

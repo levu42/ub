@@ -4,7 +4,7 @@ if (!isset(ub_config()['hebis'])) {
 	$GLOBALS['ub_config']['hebis'] = ['barcode_cache' => []];
 }
 
-class HeBIS {
+class HeBIS implements IUBPlugin {
 	public static function getPPNfromBarcode($barcode) {
 		if (isset(ub_config()['hebis']['barcode_cache'][$barcode])) {
 			return ub_config()['hebis']['barcode_cache'][$barcode];
