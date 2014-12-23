@@ -22,14 +22,25 @@ class HeBIS {
 		ub_config_save();
 		return $ppn;
 	}
+
+	public static forme ($onlineidentifier) {
+		if (preg_match('=^https?://hds.hebis.de/ubffm/Record/HEB(\d+)$=i', $onlineidentifier)) return true;
+		if (preg_match('=^heb\d{10}$=i', $onlineidentifier)) return true;
+		if (preg_match('=^\d{10}$=i', $onlineidentifier)) return true;
+		return false;
+	}
 		
 	private $origid = null;
 	public function __construct($onlineidentifier) {
 		$this->origid = $onlineidentifier;
-		if (strtolower(substr($onlineidentifier, 0, 3)) == 'heb') {
-			$this->ppn = $this->$onlineidentifier;
+		if (preg_match('=^https?://hds.hebis.de/ubffm/Record/HEB(\d+)$=i', $onlineidentifier, $pat) {
+			var_dump($pat); die;
 		} else {
-			$this->ppn = self::getPPNfromBarcode($onlineidentifier);
+			if (strtolower(substr($onlineidentifier, 0, 3)) == 'heb') {
+				$this->ppn = $this->$onlineidentifier;
+			} else {
+				$this->ppn = self::getPPNfromBarcode($onlineidentifier);
+			}
 		}
 	}
 

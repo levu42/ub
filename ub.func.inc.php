@@ -45,6 +45,15 @@ function array_shifted ($a) {
 	return $a;
 }
 
+//// autoloader
+
+spl_autoload_register(function($class) {
+	require_once __DIR__ . '/ub.' . $class . '.class.php';
+});
+
+
+//// ub_ functions
+
 function ub_cli_text ($name) {
 	$fn = __DIR__ . '/ub.' . str_replace('/', '_', $name) . '.txt';
 	if (file_exists($fn)) {
@@ -99,6 +108,9 @@ function ub_config () {
 				die;
 			}
 		}
+		if (!isset($c['plugins'])) {
+			$c['plugins'] = ['HeBIS', 'GoogleBooks'];
+		}
 		$GLOBALS['ub_config'] = $c;
 		register_shutdown_function('ub_config_save');
 	}
@@ -135,7 +147,17 @@ function ub_execute (array $command, array $options = []) {
 }
 
 function ub_execute_add (array $command, array $options) {
-	;
+	if (count($command) > 0) {
+		if (count($command) == 1) {
+			$command[1] = 'main';
+		}
+		$dbpath = ub_db_get_path($command[1]);
+		foreach 	
+	} else {
+		if ($options['cli']) {
+		  echo "Usage: add onlineidentifier[, dbname]\n";
+		}		
+	}
 }
 
 function ub_execute_list (array $command, array $options) {
