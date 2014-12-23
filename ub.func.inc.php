@@ -90,6 +90,15 @@ function ub_config () {
 		if (!isset($c['db'])) {
 			$c['db'] = [];
 		}
+		if (!isset($c['bibsort_path'])) {
+			$p = exec('which bibsort');
+			if (file_exists($p)) {
+				$c['bibsort_path'] = $p;	
+			} else {
+				echo cli_nok() . " bibsort not found. Please try again when bibsort is – at least for one run – in PATH\n";
+				die;
+			}
+		}
 		$GLOBALS['ub_config'] = $c;
 		register_shutdown_function('ub_config_save');
 	}
@@ -126,7 +135,7 @@ function ub_execute (array $command, array $options = []) {
 }
 
 function ub_execute_add (array $command, array $options) {
-
+	;
 }
 
 function ub_execute_list (array $command, array $options) {
