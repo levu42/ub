@@ -23,21 +23,21 @@ class HeBIS {
 		return $ppn;
 	}
 
-	public static forme ($onlineidentifier) {
+	public static function forme ($onlineidentifier) {
 		if (preg_match('=^https?://hds.hebis.de/ubffm/Record/HEB(\d+)$=i', $onlineidentifier)) return true;
-		if (preg_match('=^heb\d{10}$=i', $onlineidentifier)) return true;
-		if (preg_match('=^\d{10}$=i', $onlineidentifier)) return true;
+		if (preg_match('=^heb\d{9}$=i', $onlineidentifier)) return true;
+		if (preg_match('=^\d{8,10}$=i', $onlineidentifier)) return true;
 		return false;
 	}
 		
 	private $origid = null;
 	public function __construct($onlineidentifier) {
 		$this->origid = $onlineidentifier;
-		if (preg_match('=^https?://hds.hebis.de/ubffm/Record/HEB(\d+)$=i', $onlineidentifier, $pat) {
-			var_dump($pat); die;
+		if (preg_match('=^https?://hds.hebis.de/ubffm/Record/HEB(\d+)$=i', $onlineidentifier, $pat)) {
+			$this->ppn = $pat[1];
 		} else {
 			if (strtolower(substr($onlineidentifier, 0, 3)) == 'heb') {
-				$this->ppn = $this->$onlineidentifier;
+				$this->ppn = substr($onlineidentifier, 3);
 			} else {
 				$this->ppn = self::getPPNfromBarcode($onlineidentifier);
 			}

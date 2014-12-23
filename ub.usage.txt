@@ -14,7 +14,7 @@ ub  add onlineidentifier[, dbname]
 explanation:
 	onlineidentifier: identifies a book in an online database
 		either HeBIS-Barcode-Number (10-digit number)
-		or HeBIS PPN ("HEB" + 10-digit number)
+		or HeBIS PPN ("HEB" + 9-digit number)
 		or ISBN (13 digit number starting with 978 or 979-1..-9)
 		or HeBIS URL (…/Record/HEB…)
 		or GoogleBooks URL

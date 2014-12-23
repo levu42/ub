@@ -48,7 +48,7 @@ function array_shifted ($a) {
 //// autoloader
 
 spl_autoload_register(function($class) {
-	require_once __DIR__ . '/ub.' . $class . '.class.php';
+	require_once __DIR__ . '/ub.' . strtolower($class) . '.class.php';
 });
 
 
@@ -152,7 +152,20 @@ function ub_execute_add (array $command, array $options) {
 			$command[1] = 'main';
 		}
 		$dbpath = ub_db_get_path($command[1]);
-		foreach 	
+		foreach (ub_config()['plugins'] as $plugin) {
+			if ($plugin::forme($command[0])) {
+				$p = new $plugin($command[0]);
+				var_dump($p); die;
+				if ($options['cli']) {
+					echo CLI_OK . " entry »{$command[0]}« successfully saved\n";
+				}
+				return true;
+			}
+		}
+		if ($options['cli']) {
+			echo CLI_NOK . " could find no plugin for entry »{$command[0]}«\n";
+		}
+		return false;
 	} else {
 		if ($options['cli']) {
 		  echo "Usage: add onlineidentifier[, dbname]\n";
@@ -218,7 +231,7 @@ function ub_execute_db_add (array $command, array $options) {
 					chdir($od);
 				}
 				$GLOBALS['ub_config']['db'][$command[0]] = [
-					'path' => $command[1],
+					'path' => realpath($command[1]),
 					'git' => isset($command[2]),
 				];
 				ub_config_save();
