@@ -1,0 +1,43 @@
+Usage:
+
+ub stands for "unibib" (the german abbreveation of "university library") and is a collection of scripts for easier usage of the systems of the library of the University Frankfurt.
+
+ub  add onlineidentifier[, dbname]
+		list [dbname]
+		db  add dbname, path[, usegit]
+				list
+				remove [dbname]
+				link [dbname[, serveas]]
+		copy identifier[, from[, to]]
+		get identifier[, fieldname]
+
+explanation:
+	onlineidentifier: identifies a book in an online database
+		either HeBIS-Barcode-Number (10-digit number)
+		or HeBIS PPN ("HEB" + 10-digit number)
+		or ISBN (13 digit number starting with 978 or 979-1..-9)
+	identifier:
+		either uniqueid (field in bibtex database, equals PPN)
+		or bookname
+		or ":lastbc" for the last book scanned
+	dbname:
+		a name for a bibtex database to reference in software usage
+	path:
+		the filepath for the database
+	usegit:
+		if not empty: use git for selected database, e.g. commit & push after each change
+	serveas:
+		=main:
+			database to use for add and list by default (this is assumed when no serveas is given)
+		=barcode:
+			database to use for store barcode scans in
+		=from:
+			database to use to copy books from, if not set this equals the barcode database
+		=to:
+			database to use to copy books to, if not set this equals the main database
+	from:
+		dbname to copy books from, if ommited use serveas=from
+	to:
+		dbname to copy books to, if ommited use serveas=to
+	fieldname:
+		name of a bibtex field
