@@ -1,6 +1,6 @@
 # Abstract
 
-See [ub.usage.txt] for details.
+See [ub.usage.txt](usage description) for details.
 
 # Install
 
