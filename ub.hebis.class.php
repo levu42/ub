@@ -23,9 +23,18 @@ class HeBIS {
 		return $ppn;
 	}
 
+	public static function doesBookMatch($key, $val, $matchagainst) {
+		if (strtolower($key) != 'uniqueid') return false;
+		$val = strtolower($val);
+		if (substr($val, 0, 3) != 'heb') $val = 'heb' . $val;
+		$matchagainst = strtolower($matchagainst);
+		if (substr($matchagainst, 0, 3) != 'heb') $matchagainst = 'heb' . $matchagainst;
+		return ($val === $matchagainst);
+	}
+
 	public static function forme ($onlineidentifier) {
 		if (preg_match('=^https?://hds.hebis.de/ubffm/Record/HEB(\d+)$=i', $onlineidentifier)) return true;
-		if (preg_match('=^heb\d{9}$=i', $onlineidentifier)) return true;
+		if (preg_match('=^heb[\d\w]{9}$=i', $onlineidentifier)) return true;
 		if (preg_match('=^\d{8,10}$=i', $onlineidentifier)) return true;
 		return false;
 	}
@@ -33,7 +42,7 @@ class HeBIS {
 	private $origid = null;
 	public function __construct($onlineidentifier) {
 		$this->origid = $onlineidentifier;
-		if (preg_match('=^https?://hds.hebis.de/ubffm/Record/HEB(\d+)$=i', $onlineidentifier, $pat)) {
+		if (preg_match('=^https?://hds.hebis.de/ubffm/Record/HEB([\d\w]+)$=i', $onlineidentifier, $pat)) {
 			$this->ppn = $pat[1];
 		} else {
 			if (strtolower(substr($onlineidentifier, 0, 3)) == 'heb') {
@@ -45,18 +54,11 @@ class HeBIS {
 	}
 
 	public function saveBibTeXtoDatabase($dbpath) {
-		$url = 'https://hds.hebis.de/ubffm/Puma/Export?id=' . $this->ppn . '&exportType=bib';	
+		$url = 'https://hds.hebis.de/ubffm/Puma/Export?id=HEB' . $this->ppn . '&exportType=bib';	
 		$bibtex = file_get_contents($url);
 		if ($bibtex === false) {
 			return false;
 		}
-		exec('cp ' . escapeshellarg($dbpath) . ' ' . escapeshellarg($dbpath . '.ub-add-tmp'));
-		file_put_contents($dbpath . '.ub-add-tmp', $bibtex, FILE_APPEND);
-		exec('LC_ALL=C ' . ub_config()['bibsort_path'] . ' -f -u < ' . escapeshellarg($dbpath . '.ub-add-tmp') . ' > ' . escapeshellarg($dbpath));
-		clearstatcache();
-		if (filesize($dbpath) >= filesize ($dbpath . '.ub-add-tmp')) {
-			unlink($dbpath . '.ub-add-tmp');
-		}
-		return true;
+		return ub_save_bibtex_to_db($dbpath, $bibtex);
 	}
 }
