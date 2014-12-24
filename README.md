@@ -17,4 +17,6 @@ clone repository and symlink ub into a PATH directory.
 * add plugin for laws (dejure / gesetze-im-internet.de / …)
 * add plugin for openjur, bundesgerichtshof.de, bundesverfassungsgericht.de, …
 * add plugin for other libraries such as DNB, …
+* add cronjob to automatically import books i lent
+* add cronjob to remind me of books that are due soon 
  
