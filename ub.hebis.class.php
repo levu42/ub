@@ -53,12 +53,8 @@ class HeBIS implements IUBPlugin {
 		}
 	}
 
-	public function saveBibTeXtoDatabase($dbpath) {
+	public function getBibTeX() {
 		$url = 'https://hds.hebis.de/ubffm/Puma/Export?id=HEB' . $this->ppn . '&exportType=bib';	
-		$bibtex = file_get_contents($url);
-		if ($bibtex === false) {
-			return false;
-		}
-		return ub_save_bibtex_to_db($dbpath, $bibtex);
+		return  file_get_contents($url);
 	}
 }

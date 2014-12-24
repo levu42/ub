@@ -121,7 +121,9 @@ function ub_config_save () {
 	file_put_contents(UB_CONFIG_FILE, json_encode($GLOBALS['ub_config']));
 }
 
-function ub_save_bibtex_to_db($dbpath, $bibtex) {
+function ub_save_bibtex_to_db($dbname, $bibtex) {
+	$dbpath = ub_db_get_path($dbname);
+	if ($dbpath === false) return false;
 	exec('cp ' . escapeshellarg($dbpath) . ' ' . escapeshellarg($dbpath . '.ub-add-tmp'));
 	file_put_contents($dbpath . '.ub-add-tmp', $bibtex, FILE_APPEND);
 	exec('LC_ALL=C ' . ub_config()['bibsort_path'] . ' -f -u < ' . escapeshellarg($dbpath . '.ub-add-tmp') . ' > ' . escapeshellarg($dbpath));
@@ -162,17 +164,11 @@ function ub_execute_add (array $command, array $options) {
 		if (count($command) == 1) {
 			$command[1] = 'main';
 		}
-		$dbpath = ub_db_get_path($command[1]);
-		if (!$dbpath) {
-			if ($options['cli']) {
-				echo CLI_NOK . " could not find database »{$command[1]}«\n";
-			}
-			return false;
-		}
 		foreach (ub_config()['plugins'] as $plugin) {
 			if ($plugin::forme($command[0])) {
 				$p = new $plugin($command[0]);
-				$ret = $p->saveBibTeXtoDatabase($dbpath);
+				$bibtex = $p->getBibTeX();
+				$ret = ub_save_bibtex_to_db($command[1], $bibtex);
 				if ($options['cli']) {
 					if ($ret) {
 						echo CLI_OK . " entry »{$command[0]}« successfully saved\n";
@@ -389,15 +385,15 @@ function ub_execute_copy (array $command, array $options) {
 	} else {
 		$from = 'from';
 	}
-	$from = ub_db_get_path($from);
-	$to = ub_db_get_path($to);
-	if (realpath($to) == realpath($from)) {
+	$fromp = ub_db_get_path($from);
+	$top = ub_db_get_path($to);
+	if (realpath($top) == realpath($fromp)) {
 		if ($options['cli']) {
 			echo CLI_NOK . " from and to have to be different databases\n";
 		}
 		return false;
 	}
-	$book = ub_execute_get([$command[0]], ['cli' => false]);
+	$book = ub_execute_get([$command[0]], ['cli' => false, 'only_from_db' => $fromp]);
 	return ub_save_bibtex_to_db($to, $book);
 }
 

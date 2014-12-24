@@ -8,5 +8,5 @@ interface IUBPlugin {
 		
 	public function __construct($onlineidentifier);
 
-	public function saveBibTeXtoDatabase($dbpath);
+	public function getBibTeX();
 }
