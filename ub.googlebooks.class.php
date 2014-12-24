@@ -14,8 +14,7 @@ class GoogleBooks implements IUBPlugin {
 		;
 	}
 
-	public function getBibTeX($dbpath) {
-		;
+	public function getBibTeX() {
 	}
 
 }

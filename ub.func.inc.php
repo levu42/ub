@@ -140,6 +140,7 @@ function ub_save_bibtex_to_db($dbname, $bibtex) {
 	if (filesize($dbpath) >= filesize ($dbpath . '.ub-add-tmp')) {
 		unlink($dbpath . '.ub-add-tmp');
 	}
+
 	return true;
 }
 
