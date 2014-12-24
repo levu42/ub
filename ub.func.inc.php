@@ -52,7 +52,11 @@ function array_shifted ($a) {
 //// autoloader
 
 spl_autoload_register(function($class) {
-	require_once __DIR__ . '/ub.' . strtolower($class) . '.class.php';
+	if (file_exists(__DIR__ . '/ub.' . strtolower($class) . '.plugin.php')) {
+		require_once __DIR__ . '/ub.' . strtolower($class) . '.plugin.php';
+	} else {
+		require_once __DIR__ . '/ub.' . strtolower($class) . '.class.php';
+	}
 });
 
 
@@ -126,7 +130,7 @@ function ub_config () {
 			}
 		}
 		if (!isset($c['plugins'])) {
-			$c['plugins'] = ['HeBIS', 'GoogleBooks'];
+			$c['plugins'] = ['HeBIS', 'GoogleBooks', 'GermanLaws'];
 		}
 		$GLOBALS['ub_config'] = $c;
 		register_shutdown_function('ub_config_save');
