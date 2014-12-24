@@ -61,7 +61,7 @@ function ub_cli_text ($name) {
 	}
 }
 
-function ub_db_get_path($name = null) {
+function ub_db_get($name = null) {
 	if (is_null($name)) {
 		$name = 'main';
 	}
@@ -77,13 +77,22 @@ function ub_db_get_path($name = null) {
 			if (!isset($dbs[$link])) {
 				return false;
 			} else {
-				return $dbs[$link]['path'];
+				return $dbs[$link];
 			}
 		}
 	} else {
 		if (isset($dbs[$name])) {
-			return $dbs[$name]['path'];
+			return $dbs[$name];
 		}
+	}
+}
+
+function ub_db_get_path($name = null) {
+	$db = ub_db_get($name);
+	if ($db !== false) {
+		return $db['path'];
+	} else {
+		return false;
 	}
 }
 
@@ -426,7 +435,11 @@ function ub_execute_get (array $command, array $options) {
 	$curbook = '';
 	$yupthisisit = false;
 	$inbook = false;
-	foreach (ub_config()['db'] as $name => $db) if (!isset($db['path'])) continue; else {
+	$dbs = ub_config()['db'];
+	if (isset($options['only_from_db'])) {
+		$dbs = [$options['only_from_db'] => ub_db_get($options['only_from_db'])];
+	}
+	foreach ($dbs as $name => $db) if ($db === false) continue; else if (!isset($db['path'])) continue; else {
 		if (file_exists($db['path'])) foreach(file($db['path']) as $line) {
 			if (!trim($line)) continue;
 			if ($inbook) {
