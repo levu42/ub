@@ -4,12 +4,14 @@ ub stands for "unibib" (the german abbreveation of "university library") and is 
 
 ub  add onlineidentifier[, dbname]
 		list [dbname]
-		db  add dbname, path[, usegit]
-				list
+		db  list
+			  add dbname, path[, usegit]
 				remove [dbname]
 				link [dbname[, serveas]]
 		copy identifier[, from[, to]]
 		get identifier[, fieldname]
+		twitter setup
+						tweet identifier
 
 explanation:
 	onlineidentifier: identifies a book in an online database

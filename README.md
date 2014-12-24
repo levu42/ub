@@ -13,7 +13,7 @@ ensure git (for git support), [bibsort](http://ftp.math.utah.edu/pub/bibsort/) a
 * GoogleBooks: solid ISBN handling (eliminate - and spaces in ISBN), get book by Gooogle Books URL)
 * make webinterface nice not just proof of concepty.
 * create possibility to manage pdf files on the hard disk with ub
-* add twitter plugin for sharing every added / scanned / … book
+* add twitter setup function
 * add cli for configuring plugins (enable / disable plugins, …)
 * add plugin for laws (dejure / gesetze-im-internet.de / …)
 * add plugin for openjur, bundesgerichtshof.de, bundesverfassungsgericht.de, …
