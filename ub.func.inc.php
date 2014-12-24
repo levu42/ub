@@ -1,5 +1,9 @@
 <?php
 
+setlocale(LC_CTYPE, "en_US.UTF-8");
+
+require_once(__DIR__ . '/ub.posttweet.php');
+
 define ('CLI_OK', cli_bold() . "[" . cli_green() . "✓" . cli_unescape() . cli_bold() . "]" . cli_unescape());
 define ('CLI_NOK', cli_bold() . "[" . cli_red() . "✘" . cli_unescape() . cli_bold() . "]" . cli_unescape());
 define ('CLI_WARNING', cli_bold() . "[" . cli_red() . "⚠" . cli_unescape() . cli_bold() . "]" . cli_unescape());
@@ -157,10 +161,10 @@ function ub_save_bibtex_to_db($dbname, $bibtex, $commitmessage = "") {
 	return true;
 }
 
-function ub_get_val_from_bibtex($bibtex, $key) {
-	if (is_array($key)) {
+function ub_get_val_from_bibtex($bibtex, $getkey) {
+	if (is_array($getkey)) {
 		$ret = false;
-		foreach ($key as $k) {
+		foreach ($getkey as $k) {
 			$ret = ub_get_val_from_bibtex($bibtex, $k);
 			if ($ret !== false) {
 				break;
@@ -174,7 +178,7 @@ function ub_get_val_from_bibtex($bibtex, $key) {
 		$key = $pat[1];
 		$val = $pat[3];
 		if (!strlen($val)) $val = $pat[4]; //number
-		if ($key == $command[1]) {
+		if ($key == $getkey) {
 			return $val;
 		}
 	}
@@ -203,6 +207,8 @@ function ub_execute (array $command, array $options = []) {
 			return ub_execute_copy(array_shifted($command), $options);
 		case 'get':
 			return ub_execute_get(array_shifted($command), $options);
+		case 'twitter':
+			return ub_execute_twitter(array_shifted($command), $options);
 	}
 }
 
@@ -261,6 +267,35 @@ function ub_execute_list (array $command, array $options) {
 			return false;
 		}
 	}
+}
+
+function ub_execute_twitter (array $command, array $options) {
+	if (count($command) == 0) {
+		$command = ['setup'];
+	}
+	switch($command[0]) {
+	 case 'tweet':
+		 return ub_execute_twitter_tweet(array_shifted($command), $options);
+	 case 'setup':
+		 return ub_execute_twitter_setup(array_shifted($command), $options);
+	}
+}
+
+function ub_execute_twitter_tweet (array $command, array $options) {
+	if (count($command) == 0) {
+		if ($options['cli']) {
+			echo "Usage: twitter tweet identifier\n";
+		}
+		return;
+	}
+	$book = ub_execute_get($command, ['cli' => false]);
+	$title = ub_get_val_from_bibtex($book, 'title');
+	$author = ub_get_val_from_bibtex($book, 'author');
+	$URL = ub_get_val_from_bibtex($book, ['hdsurl', 'url']);
+	if (strlen($title) > 50) {
+		$title = substr($title, 0, 50) . '…';
+	}
+	tweet("Ich halte gerade in der Hand: »{$title}« von $author $URL");
 }
 
 function ub_execute_db (array $command, array $options) {
