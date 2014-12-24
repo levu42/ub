@@ -9,7 +9,7 @@ clone repository and symlink ub into a PATH directory.
 # Todo
 
 * GoogleBooks implementation for ISBN resolving
-* implement web service for barcode-scanning-app
+* implement web service for barcode/NFC-scanning-app
 * implement git hooks
 * create possibility to manage pdf files on the hard disk with ub
 * add twitter plugin for sharing every added / scanned / … book
@@ -19,4 +19,6 @@ clone repository and symlink ub into a PATH directory.
 * add plugin for other libraries such as DNB, …
 * add cronjob to automatically import books i lent
 * add cronjob to remind me of books that are due soon 
+* create NFC reading app based on https://github.com/scriptotek/nfcbookscanner
+
  
