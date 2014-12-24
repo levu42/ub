@@ -1,47 +1,74 @@
 Usage:
 
-ub stands for "unibib" (the german abbreveation of "university library") and is a collection of scripts for easier usage of the systems of the library of the University Frankfurt.
+ub stands for "unibib" (the german abbreveation of "university library") and
+is a collection of scripts for easier usage of the systems of the library of
+the University Frankfurt (http://www.ub.uni-frankfurt.de).
 
-ub  add onlineidentifier[, dbname]
-		list [dbname]
-		db  list
-			  add dbname, path[, usegit]
-				remove [dbname]
-				link [dbname[, serveas]]
-		copy identifier[, from[, to]]
-		get identifier[, fieldname]
-		twitter setup
-						tweet identifier
+Author:
 
-explanation:
-	onlineidentifier: identifies a book in an online database
-		either HeBIS-Barcode-Number (10-digit number)
-		or HeBIS PPN ("HEB" + 9-digit number)
-		or ISBN (13 digit number starting with 978 or 979-1..-9)
-		or HeBIS URL (…/Record/HEB…)
-		or GoogleBooks URL
-	identifier:
-		either uniqueid (field in bibtex database, equals PPN)
-		or bookname
-		or ":lastbc" for the last book scanned
-	dbname:
-		a name for a bibtex database to reference in software usage
-	path:
-		the filepath for the database
-	usegit:
-		if not empty: use git for selected database, e.g. commit & push after each change
-	serveas:
-		=main:
-			database to use for add and list by default (this is assumed when no serveas is given)
-		=barcode:
-			database to use for store barcode scans in
-		=from:
-			database to use to copy books from, if not set this equals the barcode database
-		=to:
-			database to use to copy books to, if not set this equals the main database
-	from:
-		dbname to copy books from, if ommited use serveas=from
-	to:
-		dbname to copy books to, if ommited use serveas=to
-	fieldname:
-		name of a bibtex field
+Florian Stascheck <levu@levu.org>
+                  <florian.stascheck@stud.uni-frankfurt.de>
+
+ub
+  add onlineidentifier[, dbname]
+  list [dbname]
+  db
+    list
+    add dbname, path[, usegit]
+    remove [dbname]
+    link [dbname[, serveas]]
+  copy identifier[, from[, to]]
+  get identifier[, fieldname]
+  twitter
+    setup
+    tweet identifier
+
+ub add
+  add a book to the library
+ub list
+  list books in the library
+ub db *
+  list/add/remove/link databases in which books are stored. these are BibTeX files
+ub db link
+  link a database to one of the functions (main, barcode, from, to).
+  e.g. if "mylibrary.bib" is linked to barcode, all books where the barcode is scanned
+  get stored into this library.
+ub copy
+  copy a book from one library to another
+ub get
+  output a book or a field of a book
+ub twitter
+  be social, tweet about what you read!
+  if this module is set up, every added book will be twittered
+
+arguments:
+  onlineidentifier: identifies a book in an online database
+    either HeBIS-Barcode-Number (10-digit number)
+    or HeBIS PPN ("HEB" + 9-digit number)
+    or ISBN (13 digit number starting with 978 or 979-1..-9)
+    or HeBIS URL (…/Record/HEB…)
+    or GoogleBooks URL
+  identifier:
+    either uniqueid (field in bibtex database, equals PPN)
+    or bookname
+  dbname:
+    a name for a bibtex database to reference in software usage
+  path:
+    the filepath for the database
+  usegit:
+    if not empty: use git for selected database, e.g. commit & push after each change
+  serveas:
+    main:
+      database to use for add and list by default (this is assumed when no serveas is given)
+    barcode:
+      database to use for store barcode scans in
+    from:
+      database to use to copy books from, if not set this equals the barcode database
+    to:
+      database to use to copy books to, if not set this equals the main database
+  from:
+    dbname to copy books from, if ommited use link=from
+  to:
+    dbname to copy books to, if ommited use link=to
+  fieldname:
+    name of a bibtex field

@@ -1,6 +1,21 @@
 # Abstract
 
-See [usage description](ub.usage.txt) for details.
+*ub* is a tool to manage bibtex files and make the import from different sources
+like Google Books, university libaries etc. easier.
+
+## Features
+
+* multiple BibTeX files possible
+* basic git integration for commit & push BibTeX files after update
+* import entries from Google Books
+* import entries from the library database of the library of the University Frankfurt
+* find entries via ISBN and other identifiers
+* list all books in all or one BibTeX file(s)
+* copy entries between BibTeX files
+* easy – also scriptable – export of books
+* tweet about every added book if wanted
+
+See [usage description](ub.usage.txt) for technical and usage details.
 
 # Install
 
