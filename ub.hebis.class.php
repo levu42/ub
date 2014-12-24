@@ -57,4 +57,8 @@ class HeBIS implements IUBPlugin {
 		$url = 'https://hds.hebis.de/ubffm/Puma/Export?id=HEB' . $this->ppn . '&exportType=bib';	
 		return  file_get_contents($url);
 	}
+
+	public function __toString() {
+		return 'HEB' . $this->ppn;
+	}
 }

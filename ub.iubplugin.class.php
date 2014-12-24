@@ -9,4 +9,6 @@ interface IUBPlugin {
 	public function __construct($onlineidentifier);
 
 	public function getBibTeX();
+
+	public function __toString();
 }

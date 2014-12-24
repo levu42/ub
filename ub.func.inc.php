@@ -130,17 +130,21 @@ function ub_config_save () {
 	file_put_contents(UB_CONFIG_FILE, json_encode($GLOBALS['ub_config']));
 }
 
-function ub_save_bibtex_to_db($dbname, $bibtex) {
+function ub_save_bibtex_to_db($dbname, $bibtex, $commitmessage = "") {
 	$dbpath = ub_db_get_path($dbname);
 	if ($dbpath === false) return false;
+	$olddir = getcwd();
+	chdir (dirname($dbpath));
+	exec("git stash 2>&1");
 	exec('cp ' . escapeshellarg($dbpath) . ' ' . escapeshellarg($dbpath . '.ub-add-tmp'));
 	file_put_contents($dbpath . '.ub-add-tmp', $bibtex, FILE_APPEND);
 	exec('LC_ALL=C ' . ub_config()['bibsort_path'] . ' -f -u < ' . escapeshellarg($dbpath . '.ub-add-tmp') . ' > ' . escapeshellarg($dbpath));
 	clearstatcache();
-	if (filesize($dbpath) >= filesize ($dbpath . '.ub-add-tmp')) {
-		unlink($dbpath . '.ub-add-tmp');
-	}
-
+	unlink($dbpath . '.ub-add-tmp');
+	exec("git commit -m " . escapeshellarg('bibtex saved' . ($commitmessage ? ': ' . $commitmessage : '')) . " " . escapeshellarg($dbpath));
+	exec("git push 2>&1");
+	exec("git stash apply 2>&1");
+	chdir($olddir);
 	return true;
 }
 
@@ -178,7 +182,7 @@ function ub_execute_add (array $command, array $options) {
 			if ($plugin::forme($command[0])) {
 				$p = new $plugin($command[0]);
 				$bibtex = $p->getBibTeX();
-				$ret = ub_save_bibtex_to_db($command[1], $bibtex);
+				$ret = ub_save_bibtex_to_db($command[1], $bibtex, (isset($options['commitmessage']) ? $options['commitmessage'] : '') . $p . " added");
 				if ($options['cli']) {
 					if ($ret) {
 						echo CLI_OK . " entry »{$command[0]}« successfully saved\n";

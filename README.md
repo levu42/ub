@@ -10,7 +10,6 @@ clone repository and symlink ub into a PATH directory.
 
 * GoogleBooks implementation for ISBN resolving
 * implement web service for barcode/NFC-scanning-app
-* implement git hooks
 * create possibility to manage pdf files on the hard disk with ub
 * add twitter plugin for sharing every added / scanned / … book
 * add cli for configuring plugins (enable / disable plugins, …)

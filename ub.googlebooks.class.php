@@ -17,4 +17,8 @@ class GoogleBooks implements IUBPlugin {
 	public function getBibTeX() {
 	}
 
+	public function __toString() {
+		;
+	}
+
 }
