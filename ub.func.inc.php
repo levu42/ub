@@ -99,7 +99,8 @@ function ub_db_get_path($name = null) {
 function ub_config () {
 	if (!isset($GLOBALS['ub_config'])) {
 		if (!defined('UB_CONFIG_FILE')) {
-			define('UB_CONFIG_FILE', posix_getpwuid(posix_getuid())['dir'] . '/.ubconfig.json');
+			define('UB_HOME_DIR', posix_getpwuid(posix_getuid())['dir']);
+			define('UB_CONFIG_FILE', UB_HOME_DIR . '/.ubconfig.json');
 		}
 		if (!file_exists(UB_CONFIG_FILE)) {
 			file_put_contents(UB_CONFIG_FILE, "{}\n");
@@ -107,6 +108,9 @@ function ub_config () {
 		$c = json_decode(file_get_contents(UB_CONFIG_FILE), true);
 		if (!isset($c['db'])) {
 			$c['db'] = [];
+		}
+		if (!isset($c['web'])) {
+			$c['web'] = [];
 		}
 		if (!isset($c['bibsort_path'])) {
 			$p = exec('which bibsort');
