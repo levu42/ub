@@ -133,18 +133,23 @@ function ub_config_save () {
 function ub_save_bibtex_to_db($dbname, $bibtex, $commitmessage = "") {
 	$dbpath = ub_db_get_path($dbname);
 	if ($dbpath === false) return false;
-	$olddir = getcwd();
-	chdir (dirname($dbpath));
-	exec("git stash 2>&1");
+	$git = ub_db_get($dbname)['git'];
+	if ($git) {
+		$olddir = getcwd();
+		chdir (dirname($dbpath));
+		exec("git stash 2>&1");
+	}
 	exec('cp ' . escapeshellarg($dbpath) . ' ' . escapeshellarg($dbpath . '.ub-add-tmp'));
 	file_put_contents($dbpath . '.ub-add-tmp', $bibtex, FILE_APPEND);
 	exec('LC_ALL=C ' . ub_config()['bibsort_path'] . ' -f -u < ' . escapeshellarg($dbpath . '.ub-add-tmp') . ' > ' . escapeshellarg($dbpath));
 	clearstatcache();
 	unlink($dbpath . '.ub-add-tmp');
-	exec("git commit -m " . escapeshellarg('bibtex saved' . ($commitmessage ? ': ' . $commitmessage : '')) . " " . escapeshellarg($dbpath));
-	exec("git push 2>&1");
-	exec("git stash apply 2>&1");
-	chdir($olddir);
+	if ($git) {
+		exec("git commit -m " . escapeshellarg('bibtex saved' . ($commitmessage ? ': ' . $commitmessage : '')) . " " . escapeshellarg($dbpath));
+		exec("git push 2>&1");
+		exec("git stash apply 2>&1");
+		chdir($olddir);
+	}
 	return true;
 }
 
