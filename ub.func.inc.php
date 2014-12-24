@@ -153,6 +153,20 @@ function ub_save_bibtex_to_db($dbname, $bibtex, $commitmessage = "") {
 	return true;
 }
 
+function ub_get_val_from_bibtex($bibtex, $key) {
+	foreach(explode("\n", $bibtex) as $line) {
+		$p = preg_match('/^\s*(\w+)\s*=\s*({\s*([^}]+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
+		if (count($pat) < 4) continue;
+		$key = $pat[1];
+		$val = $pat[3];
+		if (!strlen($val)) $val = $pat[4]; //number
+		if ($key == $command[1]) {
+			return $val;
+		}
+	}
+	return false;
+}
+
 function ub_execute (array $command, array $options = []) {
 	$options = array_merge([
 		'cli' => false
@@ -425,22 +439,17 @@ function ub_execute_get (array $command, array $options) {
 	}
 	if (count($command) > 1) {
 		$book = ub_execute_get ([$command[0]], ['cli' => false]);
-		foreach(explode("\n", $book) as $line) {
-			$p = preg_match('/^\s*(\w+)\s*=\s*({\s*([^}]+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
-			if (count($pat) < 4) continue;
-			$key = $pat[1];
-			$val = $pat[3];
-			if (!strlen($val)) $val = $pat[4]; //number
-			if ($key == $command[1]) {
-				if ($options['cli']) {
-					echo "$val\n";
-					return true;
-				} else {
-					return $val;
-				}
+		$val = ub_get_val_from_bibtex($book, $command[1]);
+		if ($options['cli']) {
+			if ($val === false) {
+				echo CLI_NOK . " entry »{$command[1]}« in book »{$command[0]}« not found\n";
+			} else {
+				echo "$val\n";
 			}
+			return true;
+		} else {
+			return $val;
 		}
-		return;
 	}
 	$curbook = '';
 	$yupthisisit = false;
