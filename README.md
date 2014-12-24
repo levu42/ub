@@ -40,5 +40,6 @@ ensure git (for git support), [bibsort](http://ftp.math.utah.edu/pub/bibsort/) a
 * add cronjob to automatically import books i lent
 * add cronjob to remind me of books that are due soon 
 * create NFC reading app based on https://github.com/scriptotek/nfcbookscanner
-
+* auto add books when not found on get (useful for e.g. laws)
+* make a link for every installed plugin (e.g. all googlebook imports will be imported to googlebooks link)
  
