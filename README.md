@@ -6,6 +6,8 @@ See [usage description](ub.usage.txt) for details.
 
 clone repository and symlink ub into a PATH directory.
 
+ensure git (for git support), [bibsort](http://ftp.math.utah.edu/pub/bibsort/) and POSIX extension for PHP installed.
+
 # Todo
 
 * GoogleBooks implementation for ISBN resolving
