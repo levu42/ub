@@ -154,6 +154,16 @@ function ub_save_bibtex_to_db($dbname, $bibtex, $commitmessage = "") {
 }
 
 function ub_get_val_from_bibtex($bibtex, $key) {
+	if (is_array($key)) {
+		$ret = false;
+		foreach ($key as $k) {
+			$ret = ub_get_val_from_bibtex($bibtex, $k);
+			if ($ret !== false) {
+				break;
+			}
+		}
+		return $ret;
+	}
 	foreach(explode("\n", $bibtex) as $line) {
 		$p = preg_match('/^\s*(\w+)\s*=\s*({\s*([^}]+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
 		if (count($pat) < 4) continue;
