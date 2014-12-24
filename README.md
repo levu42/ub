@@ -21,6 +21,10 @@ See [usage description](ub.usage.txt) for technical and usage details.
 
 clone repository and symlink ub into a PATH directory.
 
+symlink ub.web.php into a web server document root. It's highly recommended to setup a web.password\_sha256 in the ~/.ubconfig.json file.
+
+setup [twitter app](https://apps.twitter.com) for twitter integration.
+
 ensure git (for git support), [bibsort](http://ftp.math.utah.edu/pub/bibsort/) and POSIX extension for PHP installed.
 
 # Todo
