@@ -11,7 +11,7 @@ ensure git (for git support), [bibsort](http://ftp.math.utah.edu/pub/bibsort/) a
 # Todo
 
 * GoogleBooks: solid ISBN handling (eliminate - and spaces in ISBN), get book by Gooogle Books URL)
-* implement web service for barcode/NFC-scanning-app
+* make webinterface nice not just proof of concepty.
 * create possibility to manage pdf files on the hard disk with ub
 * add twitter plugin for sharing every added / scanned / … book
 * add cli for configuring plugins (enable / disable plugins, …)
