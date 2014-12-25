@@ -4,7 +4,7 @@ class GoogleBooks implements IUBPlugin {
 
 	public static function forme($onlineidentifier) {
 		if (preg_match('=^([\dX]{10}|\d{13})$=i', $onlineidentifier)) return true;
-		if (preg_match('=^https://books.google.com/', $onlineidentifier)) return true;
+		if (preg_match('=^https://books.google.com/=i', $onlineidentifier)) return true;
 		return false;
 	}
 

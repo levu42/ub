@@ -22,7 +22,7 @@
 		private $subparagraph;
 		private $law;
 
-		const $paragraphtypes = [
+		const paragraphtypes = [
 			['§', 'par', 'par.', 'paragraph', 'paragraf'],
 			['Artikel', 'Art', 'Art.', 'A'],
 		]
