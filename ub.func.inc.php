@@ -13,7 +13,7 @@ function ub_link_names () { // since there are no array constants possible…
 }
 
 function cli_unescape() {
-	if (posix_isatty(STDOUT)) {
+	if (defined('STDOUT') && posix_isatty(STDOUT)) {
 		return "\033[0m";
 	} else {
 		return '';
@@ -21,7 +21,7 @@ function cli_unescape() {
 }
 
 function cli_bold() {
-	if (posix_isatty(STDOUT)) {
+	if (defined('STDOUT') && posix_isatty(STDOUT)) {
 		return "\033[1m";
 	} else {
 		return '';
@@ -29,7 +29,7 @@ function cli_bold() {
 }
 
 function cli_red() {
-	if (posix_isatty(STDOUT)) {
+	if (defined('STDOUT') && posix_isatty(STDOUT)) {
 		return "\033[31m";
 	} else {
 		return '';
@@ -37,7 +37,7 @@ function cli_red() {
 }
 
 function cli_green() {
-	if (posix_isatty(STDOUT)) {
+	if (defined('STDOUT') && posix_isatty(STDOUT)) {
 		return "\033[32m";
 	} else {
 		return '';

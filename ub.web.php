@@ -1,8 +1,9 @@
 <?php
 
 if (!isset($_GET['barcode'])) die;
-require_once __FILE__ . '/ub.func.inc.php';
-require_once __FILE__ . '/ub.posttweet.php';
+
+require_once __DIR__ . '/ub.func.inc.php';
+require_once __DIR__ . '/ub.posttweet.php';
 
 if (isset(ub_config()['web']['password_sha256'])) {
 	if (!isset($_GET['hash'])) die;
@@ -12,7 +13,7 @@ if (isset(ub_config()['web']['password_sha256'])) {
 }
 
 ub_execute_add([$_GET['barcode'], 'barcode'], ['cli' => false]);
-ub_execute_twitter_tweet([$_GET['barcode']);
+ub_execute_twitter_tweet([$_GET['barcode']], ['cli' => false]);
 
 header('Location: ' . $URL);
 
