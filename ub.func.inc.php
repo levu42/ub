@@ -250,8 +250,8 @@ function ub_execute_import (array $command, array $options) {
 	if ($command[0] == '-') {
 		$command[0] = 'php://stdin';
 	} else {
-		$command[0] = strtolower($command[0]);
-		if (!(file_exists($command[0])) || (substr($command[0], 0, 5) == 'http:') || (substr($command[0], 0, 6) == 'https:')) {
+		$testurl = strtolower($command[0]);
+		if (!(file_exists($command[0])) || (substr($testurl, 0, 5) == 'http:') || (substr($testurl, 0, 6) == 'https:')) {
 			if ($options['cli']) {
 				echo CLI_NOK . " import file not found\n";
 			}
