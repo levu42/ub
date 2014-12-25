@@ -1,6 +1,6 @@
 # Abstract
 
-*ub* is a tool to manage bibtex files and make the import from different sources
+`ub` is a tool to manage bibtex files and make the import from different sources
 like Google Books, university libaries etc. easier.
 
 ## Features
@@ -22,13 +22,29 @@ See [usage description](ub.usage.txt) for technical and usage details.
 
 needs PHP5 to work. developed with 5.6.4, so maybe it will not work with older versions ¯\\\_(ツ)\_/¯
 
-clone repository and symlink ub into a PATH directory.
+clone repository and symlink `ub` into a PATH directory.
 
-symlink ub.web.php into a web server document root. It's highly recommended to setup a web.password\_sha256 in the ~/.ubconfig.json file.
+symlink `ub.web.php` into a web server document root. It's highly recommended to setup a `web.password_sha256` in the `~/.ubconfig.json` file.
 
 setup [twitter app](https://apps.twitter.com) for twitter integration.
 
-ensure git (for git support), [bibsort](http://ftp.math.utah.edu/pub/bibsort/) and POSIX extension for PHP installed.
+ensure git, [bibsort](http://ftp.math.utah.edu/pub/bibsort/) and POSIX extension for PHP installed.
+
+## Example usage
+
+`ub` – let's first run ub once without any argument to create a basic config file
+
+`ub db add mylibrary /path/to/mylibrary.bib` add `mylibrary.bib` (with the name `mlibrary`) 
+
+`ub db link mylibrary main` set mylibrary as the main database
+
+if you want, you can now add more databases and link them to different functions such as `barcode`, which is the database the `ub.web.php` uses to store books into. The purpose of this web service is to handle requests given by e.g. an [android barcode app](https://play.google.com/store/apps/details?id=com.google.zxing.client.android).
+
+`ub db list` now shows all configured databases.
+
+`ub add [ISBN]` adds the bibtex snippet imported from Google Books for the given ISBN to the main library.
+
+`ub get [ISBN]` gives you the bibtex snippet for the given ISBN. works also with the bibtex keys, of course.
 
 # Todo
 
