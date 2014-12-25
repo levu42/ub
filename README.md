@@ -19,6 +19,8 @@ See [usage description](ub.usage.txt) for technical and usage details.
 
 # Install
 
+needs PHP5 to work. developed with 5.6.4, so maybe it will not work with older versions ¯\\\_(ツ)\_/¯
+
 clone repository and symlink ub into a PATH directory.
 
 symlink ub.web.php into a web server document root. It's highly recommended to setup a web.password\_sha256 in the ~/.ubconfig.json file.
