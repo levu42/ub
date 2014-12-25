@@ -3,7 +3,10 @@
 class GoogleBooks implements IUBPlugin {
 
 	public static function forme($onlineidentifier) {
-		if (preg_match('=^([\dX]{10}|\d{13})$=i', $onlineidentifier)) return true;
+		if (preg_match('=^([\dX]{10}|\d{13})$=i', $onlineidentifier)) {
+			$url = 'https://googleapis.com/books/v1/volumes?q=isbn:' . $onlineidentifier;
+			return (explode(" ", get_headers($url)[0])[1] != '404');
+		}
 		if (preg_match('=^https://books.google.com/=i', $onlineidentifier)) return true;
 		return false;
 	}
@@ -24,7 +27,7 @@ class GoogleBooks implements IUBPlugin {
 				if (in_array(substr($onlineidentifier, 0, 3), ['978', '979'])) { //TODO: if 979, check if not 9790
 					$data = json_decode(
 						file_get_contents(
-							'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $onlineidentifier
+							'https://googleapis.com/books/v1/volumes?q=isbn:' . $onlineidentifier
 						), true
 					);
 					$this->isbn = $onlineidentifier;
