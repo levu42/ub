@@ -130,7 +130,9 @@ function ub_config () {
 			}
 		}
 		if (!isset($c['plugins'])) {
-			$c['plugins'] = ['HeBIS', 'GoogleBooks', 'GermanLaws'];
+			$c['plugins'] = ['HeBIS', 'GoogleBooks'];
+		} else {
+			$c['plugins'] = array_diff($c['plugins'], ['GermanLaws']);
 		}
 		$GLOBALS['ub_config'] = $c;
 		register_shutdown_function('ub_config_save');
