@@ -177,11 +177,30 @@ function ub_get_val_from_bibtex($bibtex, $getkey) {
 		return $ret;
 	}
 	foreach(explode("\n", $bibtex) as $line) {
-		$p = preg_match('/^\s*(\w+)\s*=\s*({\s*([^}]+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
+		$p = preg_match('/^\s*(\w+)\s*=\s*({\s*(.+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
 		if (count($pat) < 4) continue;
 		$key = $pat[1];
 		$val = $pat[3];
 		if (!strlen($val)) $val = $pat[4]; //number
+		$replacements = [
+			"{\\'O}" => "Ó",
+			"{\\'o}" => "ó",
+			"{\\'U}" => "Ú",
+			"{\\'u}" => "ú",
+			"{\\'E}" => "É",
+			"{\\'e}" => "é",
+			"{\\'A}" => "Á",
+			"{\\'a}" => "á",
+			"{\\'I}" => "Í",
+			"{\\'i}" => "í",
+			"{\\dh}" => "ð",
+			"{\\Dh}" => "Ð",
+			"{\\DH}" => "Ð",
+			"{\\th}" => "þ",
+			"{\\Th}" => "Þ",
+			"{\\TH}" => "Þ",
+		];
+		$val = strtr($val, $replacements);
 		if ($key == $getkey) {
 			return $val;
 		}
