@@ -50,6 +50,9 @@ if you want, you can now add more databases and link them to different functions
 
 * GoogleBooks: solid ISBN handling (eliminate - and spaces in ISBN), get book by Gooogle Books URL)
 * make webinterface nice not just proof of concepty.
+* add ub set command to set specific elements of an entry
+* add ub comment command as abbreveation for ub set comment
+* add ub edit command to edit one book with an external editor
 * create possibility to manage pdf files on the hard disk with ub
 * add twitter setup function
 * add cli for configuring plugins (enable / disable plugins, …)
