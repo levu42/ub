@@ -15,5 +15,5 @@ if (isset(ub_config()['web']['password_sha256'])) {
 ub_execute_add([$_GET['barcode'], 'barcode'], ['cli' => false]);
 ub_execute_twitter_tweet([$_GET['barcode']], ['cli' => false]);
 
-header('Location: ' . $URL);
+header('Location: ' . ub_get_val_from_bibtex(ub_execute_get([$_GET['barcode']], ['cli' => false]), ['hdsurl', 'url']));
 
