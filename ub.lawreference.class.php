@@ -25,7 +25,7 @@
 		private $paragraphtypes = [
 			['§', 'par', 'par.', 'paragraph', 'paragraf'],
 			['Artikel', 'Art', 'Art.', 'A'],
-		]
+		];
 
 		public function __construct($lawReferenceString) {
 			list(
