@@ -14,6 +14,7 @@ like Google Books, university libaries etc. easier.
 * copy entries between BibTeX files
 * easy – also scriptable – export of books
 * tweet about every added book if wanted
+* import entry from stdin or file
 
 See [usage description](ub.usage.txt) for technical and usage details.
 

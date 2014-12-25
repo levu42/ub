@@ -16,9 +16,10 @@ ub
     list
     add dbname, path[, usegit]
     remove [dbname]
-    link [dbname[, serveas]]
+    link [dbname[, linkto]]
   copy identifier[, from[, to]]
   get identifier[, fieldname]
+  import [filename[, dbname]]
   twitter
     setup
     tweet identifier
@@ -30,13 +31,15 @@ ub list
 ub db *
   list/add/remove/link databases in which books are stored. these are BibTeX files
 ub db link
-  link a database to one of the functions (main, barcode, from, to).
+  link a database to one of the functions (main, barcode, from, to, import).
   e.g. if "mylibrary.bib" is linked to barcode, all books where the barcode is scanned
   get stored into this library.
 ub copy
   copy a book from one library to another
 ub get
   output a book or a field of a book
+ub import
+  import bibtex entry from file or stdin. If no filename is given or filename is '-', stdin is used.
 ub twitter
   be social, tweet about what you read!
   if this module is set up, every added book will be twittered
@@ -57,9 +60,9 @@ arguments:
     the filepath for the database
   usegit:
     if not empty: use git for selected database, e.g. commit & push after each change
-  serveas:
+  linkto:
     main:
-      database to use for add and list by default (this is assumed when no serveas is given)
+      database to use for add and list by default (this is assumed when no linkto is given)
     barcode:
       database to use for store barcode scans in
     from:
@@ -67,8 +70,10 @@ arguments:
     to:
       database to use to copy books to, if not set this equals the main database
   from:
-    dbname to copy books from, if ommited use link=from
+    dbname to copy books from, if ommited use linkto=from
   to:
-    dbname to copy books to, if ommited use link=to
+    dbname to copy books to, if ommited use linkto=to
+  filename:
+    filename to import from. use - for importing from stdin
   fieldname:
     name of a bibtex field

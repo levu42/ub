@@ -9,11 +9,15 @@ define ('CLI_NOK', cli_bold() . "[" . cli_red() . "✘" . cli_unescape() . cli_b
 define ('CLI_WARNING', cli_bold() . "[" . cli_red() . "⚠" . cli_unescape() . cli_bold() . "]" . cli_unescape());
 
 function ub_link_names () { // since there are no array constants possible…
-	return ['main', 'barcode', 'from', 'to'];
+	return ['main', 'barcode', 'from', 'to', 'import'];
+}
+
+function is_tty() {
+	return (defined('STDOUT') && posix_isatty(STDOUT));
 }
 
 function cli_unescape() {
-	if (defined('STDOUT') && posix_isatty(STDOUT)) {
+	if (is_tty()) {
 		return "\033[0m";
 	} else {
 		return '';
@@ -21,7 +25,7 @@ function cli_unescape() {
 }
 
 function cli_bold() {
-	if (defined('STDOUT') && posix_isatty(STDOUT)) {
+	if (is_tty()) {
 		return "\033[1m";
 	} else {
 		return '';
@@ -29,7 +33,7 @@ function cli_bold() {
 }
 
 function cli_red() {
-	if (defined('STDOUT') && posix_isatty(STDOUT)) {
+	if (is_tty()) {
 		return "\033[31m";
 	} else {
 		return '';
@@ -37,7 +41,7 @@ function cli_red() {
 }
 
 function cli_green() {
-	if (defined('STDOUT') && posix_isatty(STDOUT)) {
+	if (is_tty()) {
 		return "\033[32m";
 	} else {
 		return '';
@@ -232,8 +236,38 @@ function ub_execute (array $command, array $options = []) {
 			return ub_execute_copy(array_shifted($command), $options);
 		case 'get':
 			return ub_execute_get(array_shifted($command), $options);
+		case 'import':
+			return ub_execute_import(array_shifted($command), $options);
 		case 'twitter':
 			return ub_execute_twitter(array_shifted($command), $options);
+	}
+}
+
+function ub_execute_import (array $command, array $options) {
+	if (count($command) == 0) {
+		$command = ['-'];
+	}
+	if ($command[0] == '-') {
+		$command[0] = 'php://stdin';
+	} else {
+		if (!file_exists($command[0])) {
+			if ($options['cli']) {
+				echo CLI_NOK . " import file not found\n";
+			}
+			return false;
+		}
+	}
+	$book = file_get_contents($command[0]);
+	$dbname = isset($command[1]) ? $command[1] : 'import';
+	$ret = ub_save_bibtex_to_db($dbname, $book, 'imported from ' . $command[0]);
+	if ($options['cli']) {
+		if ($ret === false) {
+			echo CLI_NOK . " error on saving to »{$dbname}« database\n";
+		} else {
+			echo CLI_OK . " successfully imported to »{$dbname}«\n";
+		}
+	} else {
+		return $ret;
 	}
 }
 
