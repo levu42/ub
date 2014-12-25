@@ -9,6 +9,7 @@
 			// or "Art. 2 III GG"
 			// or "Art. 1" (assuming GG if Art and no law given)
 			// or "985" (assuming § if not given, assuming BGB if § and no law given)
+			return false;
 		}
 
 		public static function isValid($lawReferenceString) {

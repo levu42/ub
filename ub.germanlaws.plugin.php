@@ -23,6 +23,6 @@ class GermanLaws {
 	}
 
 	public function __toString() {
-		;
+		return '';
 	}
 }
