@@ -20,6 +20,7 @@ ub
   copy identifier[, from[, to]]
   get identifier[, fieldname]
   import [filename[, dbname]]
+  edit identifier[, dbname]
   twitter
     setup
     tweet identifier
@@ -40,6 +41,8 @@ ub get
   output a book or a field of a book
 ub import
   import bibtex entry from file or stdin. If no filename is given or filename is '-', stdin is used.
+ub edit
+  opens an editor to edit the bibtex entry identified by identifier
 ub twitter
   be social, tweet about what you read!
   if this module is set up, every added book will be twittered

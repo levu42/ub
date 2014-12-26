@@ -10,6 +10,7 @@ like Google Books, university libaries etc. easier.
 * import entries from Google Books
 * import entries from the library database of the library of the University Frankfurt
 * find entries via ISBN and other identifiers
+* edit entries regardless of in which BibTeX file they are saved
 * list all books in all or one BibTeX file(s)
 * copy entries between BibTeX files
 * easy – also scriptable – export of books
@@ -52,7 +53,6 @@ if you want, you can now add more databases and link them to different functions
 * make webinterface nice not just proof of concepty.
 * add ub set command to set specific elements of an entry
 * add ub comment command as abbreveation for ub set comment
-* add ub edit command to edit one book with an external editor
 * create possibility to manage pdf files on the hard disk with ub
 * add twitter setup function
 * add cli for configuring plugins (enable / disable plugins, …)

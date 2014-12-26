@@ -148,7 +148,7 @@ function ub_config_save () {
 	file_put_contents(UB_CONFIG_FILE, json_encode($GLOBALS['ub_config']));
 }
 
-function ub_save_bibtex_to_db($dbname, $bibtex, $commitmessage = "") {
+function ub_save_bibtex_to_db($dbname, $bibtex, $commitmessage = "", $olddbcontent = null) {
 	$dbpath = ub_db_get_path($dbname);
 	if ($dbpath === false) return false;
 	$git = ub_db_get($dbname)['git'];
@@ -158,7 +158,11 @@ function ub_save_bibtex_to_db($dbname, $bibtex, $commitmessage = "") {
 		exec("git stash 2>&1");
 	}
 	exec('cp ' . escapeshellarg($dbpath) . ' ' . escapeshellarg($dbpath . '.ub-add-tmp'));
-	file_put_contents($dbpath . '.ub-add-tmp', $bibtex, FILE_APPEND);
+	if (!is_null($olddbcontent)) {
+		file_put_contents($dbpath . '.ub-add-tmp', $olddbcontent . "\n" . $bibtex);
+	} else {
+		file_put_contents($dbpath . '.ub-add-tmp', $bibtex, FILE_APPEND);
+	}
 	exec('LC_ALL=C ' . ub_config()['bibsort_path'] . ' -f -u < ' . escapeshellarg($dbpath . '.ub-add-tmp') . ' > ' . escapeshellarg($dbpath));
 	clearstatcache();
 	unlink($dbpath . '.ub-add-tmp');
@@ -169,6 +173,32 @@ function ub_save_bibtex_to_db($dbname, $bibtex, $commitmessage = "") {
 		chdir($olddir);
 	}
 	return true;
+}
+
+function ub_get_db_without_book($dbname, $bookname) {
+	$dbp = ub_db_get_path($dbname);
+	if ($dbp === false) return false;
+	$db = file($dbp);
+	$inbook = false;
+	$skipbook = false;
+	$ret = [];
+	foreach($db as $l) {
+		$l = trim($l, "\r\n");
+		if (preg_match('/^\s*@(\w+)\{(\w+),\s*$/i', $l, $pat)) {
+			if ($pat[2] == $bookname) {
+				$skipbook = true;
+			}
+		}
+		if (!$skipbook) {
+			$ret[] = $l;
+		}
+		if (trim($l) == '}') {
+			$inbook = false;
+			$skipbook = false;
+		}
+	}
+
+	return implode("\n", $ret) . "\n";
 }
 
 function ub_get_val_from_bibtex($bibtex, $getkey) {
@@ -214,6 +244,52 @@ function ub_get_val_from_bibtex($bibtex, $getkey) {
 	return false;
 }
 
+function ub_get_book($identifier, $options) {
+	$curbook = '';
+	$yupthisisit = false;
+	$inbook = false;
+	$name = '';
+	$dbs = ub_config()['db'];
+	if (isset($options['only_from_db'])) {
+		$dbs = [$options['only_from_db'] => ub_db_get($options['only_from_db'])];
+	}
+	foreach ($dbs as $dbname => $db) if ($db === false) continue; else if (!isset($db['path'])) continue; else {
+		if (file_exists($db['path'])) foreach(file($db['path']) as $line) {
+			if (!trim($line)) continue;
+			if ($inbook) {
+				$curbook .= $line;
+			}
+			if ($inbook && (trim($line) == '}')) {
+				$inbook = false;
+				if ($yupthisisit) {
+					return [
+						'bibtex' => $curbook,
+						'dbname' => $dbname,
+						'name' => $name,
+					];
+				}
+			} else if (trim($line)[0] == '@') {
+				$name = trim(substr($line, strpos($line, '{')+1), "\n,");
+				$yupthisisit = ($name == $identifier);
+				$inbook = true;
+				$curbook = $line;
+			} else if ($inbook && !$yupthisisit) {
+				$p = preg_match('/^\s*(\w+)\s*=\s*({\s*([^}]+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
+				if (count($pat) < 4) continue;
+				$key = $pat[1];
+				$val = $pat[3];
+				if (!strlen($val)) $val = $pat[4]; //number
+				foreach (ub_config()['plugins'] as $plugin) {
+					if ($plugin::doesBookMatch($key, $val, $identifier)) {
+						$yupthisisit = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
 function ub_execute (array $command, array $options = []) {
 	$options = array_merge([
 		'cli' => false
@@ -236,6 +312,8 @@ function ub_execute (array $command, array $options = []) {
 			return ub_execute_copy(array_shifted($command), $options);
 		case 'get':
 			return ub_execute_get(array_shifted($command), $options);
+		case 'edit':
+			return ub_execute_edit(array_shifted($command), $options);
 		case 'import':
 			return ub_execute_import(array_shifted($command), $options);
 		case 'twitter':
@@ -301,6 +379,37 @@ function ub_execute_add (array $command, array $options) {
 		  echo "Usage: add onlineidentifier[, dbname]\n";
 		}	
 	}
+}
+
+function ub_execute_edit (array $command, array $options) {
+	if (!$options['cli']) return false; //interactive edit command, can only be called via cli
+	if (!is_tty()) return false; // see above
+	if (count($command) == 0) {
+		if ($options['cli']) {
+			echo "usage: edit identifier[, dbname]\n";
+		}
+		return;
+	}
+	$o = [];
+	if (count($command) > 1) {
+		$o['only_from_db'] = $command[1];
+	}
+	$book = ub_get_book($command[0], $o);
+	$tmpf = tempnam('/tmp', 'ub.edit.');
+	file_put_contents($tmpf, $book['bibtex']);
+	$editor = (getenv('VISUAL') === false) ? 'vim' : getenv('VISUAL');
+	exec(escapeshellcmd($editor) . ' ' . escapeshellarg($tmpf) . ' > `tty`');
+	$newentry = file_get_contents($tmpf);
+	$dbwithout = ub_get_db_without_book($book['dbname'], $book['name']);
+	$ret = ub_save_bibtex_to_db($book['dbname'], $newentry, 'edited by user with ub edit', $dbwithout);
+	if ($options['cli']) {
+		if ($ret !== false) {
+			echo CLI_OK . " entry successfully saved\n";
+		} else {
+			echo CLI_NOK . " could not save entry\n";
+		}
+	}
+	return $ret;
 }
 
 function ub_execute_list (array $command, array $options) {
@@ -560,47 +669,12 @@ function ub_execute_get (array $command, array $options) {
 			return $val;
 		}
 	}
-	$curbook = '';
-	$yupthisisit = false;
-	$inbook = false;
-	$dbs = ub_config()['db'];
-	if (isset($options['only_from_db'])) {
-		$dbs = [$options['only_from_db'] => ub_db_get($options['only_from_db'])];
-	}
-	foreach ($dbs as $name => $db) if ($db === false) continue; else if (!isset($db['path'])) continue; else {
-		if (file_exists($db['path'])) foreach(file($db['path']) as $line) {
-			if (!trim($line)) continue;
-			if ($inbook) {
-				$curbook .= $line;
-			}
-			if ($inbook && (trim($line) == '}')) {
-				$inbook = false;
-				if ($yupthisisit) {
-					if ($options['cli']) {
-						echo $curbook;
-						return true;
-					} else {
-						return $curbook;
-					}
-				}
-			} else if (trim($line)[0] == '@') {
-				$name = trim(substr($line, strpos($line, '{')+1), "\n,");
-				$yupthisisit = ($name == $command[0]);
-				$inbook = true;
-				$curbook = $line;
-			} else if ($inbook && !$yupthisisit) {
-				$p = preg_match('/^\s*(\w+)\s*=\s*({\s*([^}]+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
-				if (count($pat) < 4) continue;
-				$key = $pat[1];
-				$val = $pat[3];
-				if (!strlen($val)) $val = $pat[4]; //number
-				foreach (ub_config()['plugins'] as $plugin) {
-					if ($plugin::doesBookMatch($key, $val, $command[0])) {
-						$yupthisisit = true;
-						break;
-					}
-				}				
-			}	
-		}
+	$book = ub_get_book($command[0], $options);
+	$book = $book['bibtex'];
+	if ($options['cli']) {
+		echo $curbook;
+		return true;
+	} else {
+		return $curbook;
 	}
 }
