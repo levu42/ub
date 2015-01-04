@@ -672,7 +672,7 @@ function ub_execute_get (array $command, array $options) {
 	$book = ub_get_book($command[0], $options);
 	$book = $book['bibtex'];
 	if ($options['cli']) {
-		echo $curbook;
+		echo $book;
 		return true;
 	} else {
 		return $curbook;
