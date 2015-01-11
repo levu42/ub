@@ -219,6 +219,16 @@ function ub_get_val_from_bibtex($bibtex, $getkey) {
 		$val = $pat[3];
 		if (!strlen($val)) $val = $pat[4]; //number
 		$replacements = [
+			"{\\\"O}" => "Ó",
+			"{\\\"o}" => "ó",
+			"{\\\"U}" => "Ú",
+			"{\\\"u}" => "ú",
+			"{\\\"E}" => "É",
+			"{\\\"e}" => "é",
+			"{\\\"A}" => "Á",
+			"{\\\"a}" => "á",
+			"{\\\"I}" => "Í",
+			"{\\\"i}" => "í",
 			"{\\'O}" => "Ó",
 			"{\\'o}" => "ó",
 			"{\\'U}" => "Ú",
@@ -235,6 +245,7 @@ function ub_get_val_from_bibtex($bibtex, $getkey) {
 			"{\\th}" => "þ",
 			"{\\Th}" => "Þ",
 			"{\\TH}" => "Þ",
+			"\\_" => "_",
 		];
 		$val = strtr($val, $replacements);
 		if ($key == $getkey) {
