@@ -686,6 +686,6 @@ function ub_execute_get (array $command, array $options) {
 		echo $book;
 		return true;
 	} else {
-		return $curbook;
+		return $book;
 	}
 }
