@@ -264,6 +264,15 @@ function ub_get_book($identifier, $options) {
 	if (isset($options['only_from_db'])) {
 		$dbs = [$options['only_from_db'] => ub_db_get($options['only_from_db'])];
 	}
+	$formeplugins = [];
+	foreach (ub_config()['plugins'] as $plugin) {
+		if ($plugin::forme($identifier)) {
+			$formeplugins[] = $plugin;
+		}
+	}
+	if (count($formeplugins) == 0) {
+		return false;
+	}
 	foreach ($dbs as $dbname => $db) if ($db === false) continue; else if (!isset($db['path'])) continue; else {
 		if (file_exists($db['path'])) foreach(file($db['path']) as $line) {
 			if (!trim($line)) continue;
@@ -290,7 +299,7 @@ function ub_get_book($identifier, $options) {
 				$key = $pat[1];
 				$val = $pat[3];
 				if (!strlen($val)) $val = $pat[4]; //number
-				foreach (ub_config()['plugins'] as $plugin) {
+				foreach($formeplugins as $plugin) {
 					if ($plugin::doesBookMatch($key, $val, $identifier)) {
 						$yupthisisit = true;
 						break;
@@ -299,6 +308,7 @@ function ub_get_book($identifier, $options) {
 			}
 		}
 	}
+	return false;
 }
 
 function ub_execute (array $command, array $options = []) {
