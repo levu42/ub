@@ -28,8 +28,12 @@ class HeBIS implements IUBPlugin {
 		$val = strtolower($val);
 		if (substr($val, 0, 3) != 'heb') $val = 'heb' . $val;
 		$matchagainst = strtolower($matchagainst);
-		if (substr($matchagainst, 0, 3) != 'heb') $matchagainst = 'heb' . $matchagainst;
-		return ($val === $matchagainst);
+		$m = $matchagainst;
+		if (substr($m, 0, 3) != 'heb') $m = 'heb' . $m;
+		if ($val === $m) return true;
+		$m = self::getPPNfromBarcode($matchagainst);
+		if (substr($m, 0, 3) != 'heb') $m = 'heb' . $m;
+		return ($val === $m);
 	}
 
 	public static function forme ($onlineidentifier) {
