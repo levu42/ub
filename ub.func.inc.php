@@ -9,7 +9,7 @@ define ('CLI_NOK', cli_bold() . "[" . cli_red() . "✘" . cli_unescape() . cli_b
 define ('CLI_WARNING', cli_bold() . "[" . cli_red() . "⚠" . cli_unescape() . cli_bold() . "]" . cli_unescape());
 
 function ub_link_names () { // since there are no array constants possible…
-	return ['main', 'barcode', 'from', 'to', 'import'];
+	return ['main', 'barcode', 'from', 'to', 'import', 'autoadd'];
 }
 
 function is_tty() {
@@ -691,6 +691,16 @@ function ub_execute_get (array $command, array $options) {
 		}
 	}
 	$book = ub_get_book($command[0], $options);
+	if ($book === false) {
+		if (isset(ub_config()['auto_add_on_failed_get']) && !isset($options['is_already_auto_get']) && ub_config()['auto_add_on_failed_get']) {
+			ub_execute_add([$command[0], 'autoadd'], $options);
+			return ub_execute_get($command, array_merge($options, ['is_already_auto_get' => true]));
+		}
+		if ($options['cli']) {
+			echo CLI_NOK . " book »{$command[0]}« not found\n";
+		}
+		return false;
+	}
 	$book = $book['bibtex'];
 	if ($options['cli']) {
 		echo $book;
