@@ -16,6 +16,14 @@ class HeBIS implements IUBPlugin {
 		$eintragURL = $pat[1] . 'SHW?FRST=1';
 		$html = file_get_contents($eintragURL);
 		preg_match('/PPN=(\d+)\D/msi', $html, $pat);
+		if (!count($pat)) {
+			$opacURL = 'https://lbsopac.rz.uni-frankfurt.de/DB=30/SET=6/TTL=1/CMD?ACT=SRCHA&IKT=8520&DB=30&SRT=YOP&TRM=' . urlencode($barcode) . '*';
+			$html = file_get_contents($opacURL);
+			preg_match('/BASE HREF="([^"]+)"/msi', $html, $pat);
+			$eintragURL = $pat[1] . 'SHW?FRST=1';
+			$html = file_get_contents($eintragURL);
+			preg_match('/PPN=(\d+)\D/msi', $html, $pat);
+		}
 		$ppn = $pat[1];
 
 		$GLOBALS['ub_config']['hebis']['barcode_cache'][$barcode] = $ppn;
