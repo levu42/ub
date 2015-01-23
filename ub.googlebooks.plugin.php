@@ -14,7 +14,11 @@ class GoogleBooks implements IUBPlugin {
 		$onlineidentifier = self::rawISBN($onlineidentifier);
 		if (preg_match('=^([\dX]{10}|\d{13})$=i', $onlineidentifier)) {
 			$url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $onlineidentifier;
-			return (explode(" ", get_headers($url)[0])[1] != '404');
+			//todo: implement API cache, because ::forme() is called really often
+			$is404 = (explode(" ", get_headers($url)[0])[1] != '404');
+			if ($is404) return false;
+			$data = file_get_contents($url);
+			return $data['totalItems'] > 0;
 		}
 		if (preg_match('=^https://books.google.com/=i', $onlineidentifier)) return true;
 		return false;
