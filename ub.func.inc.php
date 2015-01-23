@@ -485,7 +485,9 @@ function ub_execute_twitter_tweet (array $command, array $options) {
 	if (strlen($title) > 50) {
 		$title = substr($title, 0, 50) . '…';
 	}
-	tweet("Ich halte gerade in der Hand: »{$title}« von $author $URL");
+	if (($title != '') && ($author != '')) {
+		tweet("Ich halte gerade in der Hand: »{$title}« von $author $URL");
+	}
 }
 
 function ub_execute_db (array $command, array $options) {
