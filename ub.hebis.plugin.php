@@ -24,7 +24,11 @@ class HeBIS implements IUBPlugin {
 			$html = file_get_contents($eintragURL);
 			preg_match('/PPN=(\d+)\D/msi', $html, $pat);
 		}
-		$ppn = $pat[1];
+		if (is_array($pat) && count($pat)) {
+			$ppn = $pat[1];
+		} else {
+			$ppn = false;
+		}
 
 		$GLOBALS['ub_config']['hebis']['barcode_cache'][$barcode] = $ppn;
 		ub_config_save();
@@ -40,6 +44,7 @@ class HeBIS implements IUBPlugin {
 		if (substr($m, 0, 3) != 'heb') $m = 'heb' . $m;
 		if ($val === $m) return true;
 		$m = self::getPPNfromBarcode($matchagainst);
+		if ($m === false) return false;
 		if (substr($m, 0, 3) != 'heb') $m = 'heb' . $m;
 		return ($val === $m);
 	}
@@ -66,11 +71,13 @@ class HeBIS implements IUBPlugin {
 	}
 
 	public function getBibTeX() {
+		if ($this->ppn === false) return '';
 		$url = 'https://hds.hebis.de/ubffm/Puma/Export?id=HEB' . $this->ppn . '&exportType=bib';	
-		return  file_get_contents($url);
+		return file_get_contents($url);
 	}
 
 	public function __toString() {
+		if ($this->ppn === false) return '';
 		return 'HEB' . $this->ppn;
 	}
 }
