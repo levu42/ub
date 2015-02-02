@@ -480,7 +480,7 @@ function ub_execute_twitter_tweet (array $command, array $options) {
 	}
 	$book = ub_execute_get($command, ['cli' => false]);
 	$title = ub_get_val_from_bibtex($book, 'title');
-	$author = ub_get_val_from_bibtex($book, 'author');
+	$author = ub_get_val_from_bibtex($book, ['author', 'editor']);
 	$URL = ub_get_val_from_bibtex($book, ['hdsurl', 'url']);
 	if (strlen($title) > 50) {
 		$title = substr($title, 0, 50) . '…';
