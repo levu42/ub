@@ -270,9 +270,6 @@ function ub_get_book($identifier, $options) {
 			$formeplugins[] = $plugin;
 		}
 	}
-	if (count($formeplugins) == 0) {
-		return false;
-	}
 	foreach ($dbs as $dbname => $db) if ($db === false) continue; else if (!isset($db['path'])) continue; else {
 		if (file_exists($db['path'])) foreach(file($db['path']) as $line) {
 			if (!trim($line)) continue;
