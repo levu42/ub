@@ -476,7 +476,7 @@ function ub_execute_twitter_tweet (array $command, array $options) {
 	$author = ub_get_val_from_bibtex($book, ['author', 'editor']);
 	$URL = ub_get_val_from_bibtex($book, ['hdsurl', 'url']);
 	if (strlen($author) > 38) {
-		$author = substr($authir, 0, 38) . '…';
+		$author = substr($author, 0, 38) . '…';
 	}
 	if (strlen($title) > 50) {
 		$title = substr($title, 0, 50) . '…';
