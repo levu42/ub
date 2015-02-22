@@ -663,7 +663,7 @@ function ub_execute_copy (array $command, array $options) {
 		}
 		return false;
 	}
-	$book = ub_execute_get([$command[0]], ['cli' => false, 'only_from_db' => $fromp]);
+	$book = ub_execute_get([$command[0]], ['cli' => false, 'only_from_db' => $from]);
 	return ub_save_bibtex_to_db($to, $book);
 }
 
