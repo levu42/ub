@@ -654,6 +654,7 @@ function ub_execute_copy (array $command, array $options) {
 		}
 	} else {
 		$from = 'from';
+		$to = 'to';
 	}
 	$fromp = ub_db_get_path($from);
 	$top = ub_db_get_path($to);
