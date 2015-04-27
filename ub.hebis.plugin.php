@@ -15,14 +15,14 @@ class HeBIS implements IUBPlugin {
 		preg_match('/BASE HREF="([^"]+)"/msi', $html, $pat);
 		$eintragURL = $pat[1] . 'SHW?FRST=1';
 		$html = file_get_contents($eintragURL);
-		preg_match('/PPN=(\d+)\D/msi', $html, $pat);
+		preg_match('/PPN=([\dX]+)[^\dX]/msi', $html, $pat);
 		if (!count($pat)) {
 			$opacURL = 'https://lbsopac.rz.uni-frankfurt.de/DB=30/SET=6/TTL=1/CMD?ACT=SRCHA&IKT=8520&DB=30&SRT=YOP&TRM=' . urlencode($barcode) . '*';
 			$html = file_get_contents($opacURL);
 			preg_match('/BASE HREF="([^"]+)"/msi', $html, $pat);
 			$eintragURL = $pat[1] . 'SHW?FRST=1';
 			$html = file_get_contents($eintragURL);
-			preg_match('/PPN=(\d+)\D/msi', $html, $pat);
+			preg_match('/PPN=([\dX]+)[^\dX]/msi', $html, $pat);
 		}
 		if (is_array($pat) && count($pat)) {
 			$ppn = $pat[1];
@@ -45,7 +45,7 @@ class HeBIS implements IUBPlugin {
 		if ($val === $m) return true;
 		$m = self::getPPNfromBarcode($matchagainst);
 		if ($m === false) return false;
-		if (substr($m, 0, 3) != 'heb') $m = 'heb' . $m;
+		if (substr($m, 0, 3) != 'heb') $m = 'heb' . strtolower($m);
 		return ($val === $m);
 	}
 
