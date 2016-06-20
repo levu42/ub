@@ -135,8 +135,6 @@ function ub_config () {
 		}
 		if (!isset($c['plugins'])) {
 			$c['plugins'] = ['HeBIS', 'GoogleBooks'];
-		} else {
-			$c['plugins'] = array_diff($c['plugins'], ['GermanLaws']);
 		}
 		$GLOBALS['ub_config'] = $c;
 		register_shutdown_function('ub_config_save');
@@ -304,6 +302,14 @@ function ub_get_book($identifier, $options) {
 	return false;
 }
 
+function ub_ris2bib($riscontent) {
+	$tmpni = tempnam(sys_get_temp_dir(), 'ubris2bib');
+	$tmpno = tempnam(sys_get_temp_dir(), 'ubris2bib');
+	file_put_contents($tmpni, $riscontent);
+	exec('cat ' . escapeshellarg($tmpni) . ' |ris2xml 2>/dev/null|xml2bib 2>/dev/null > ' . escapeshellarg($tmpno));
+	return file_get_contents($tmpno);
+}
+
 function ub_execute (array $command, array $options = []) {
 	$options = array_merge([
 		'cli' => false
@@ -336,6 +342,13 @@ function ub_execute (array $command, array $options = []) {
 }
 
 function ub_execute_import (array $command, array $options) {
+	$isRIS = false;
+	if (count($command) > 0) {
+		if (($command[0] == '-r') || ($command[0] == '--ris')) {
+			$isRIS = true;
+			$command = array_shifted($command);
+		}
+	}
 	if (count($command) == 0) {
 		$command = ['-'];
 	}
@@ -351,6 +364,9 @@ function ub_execute_import (array $command, array $options) {
 		}
 	}
 	$book = file_get_contents($command[0]);
+	if ($isRIS) {
+		$book = ub_ris2bib($book);
+	}
 	$dbname = isset($command[1]) ? $command[1] : 'import';
 	$ret = ub_save_bibtex_to_db($dbname, $book, 'imported from ' . $command[0]);
 	if ($options['cli']) {

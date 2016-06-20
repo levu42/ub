@@ -15,7 +15,7 @@ like Google Books, university libaries etc. easier.
 * copy entries between BibTeX files
 * easy – also scriptable – export of books
 * tweet about every added book if wanted
-* import entry from stdin or file
+* import entry from stdin or file, in BibTeX or RIS format
 
 See [usage description](ub.usage.txt) for technical and usage details.
 
@@ -29,7 +29,7 @@ symlink `ub.web.php` into a web server document root. It's highly recommended to
 
 setup [twitter app](https://apps.twitter.com) for twitter integration.
 
-ensure git, [bibsort](http://ftp.math.utah.edu/pub/bibsort/) and POSIX extension for PHP installed.
+ensure git, [bibsort](http://ftp.math.utah.edu/pub/bibsort/), [bibutils](http://bibutils.refbase.org/) and POSIX extension for PHP installed.
 
 ## Example usage
 
@@ -66,4 +66,5 @@ if you want, you can now add more databases and link them to different functions
 * create NFC reading app based on https://github.com/scriptotek/nfcbookscanner
 * auto add books when not found on get (useful for e.g. laws)
 * make a link for every installed plugin (e.g. all googlebook imports will be imported to googlebooks link)
+* import from leitir.is
  
