@@ -9,6 +9,7 @@ like Google Books, university libaries etc. easier.
 * basic git integration for commit & push BibTeX files after update
 * import entries from Google Books
 * import entries from the library database of the library of the University Frankfurt
+* import entries from the Icelandic National Library / Landsbókasafn Íslands and from other Icelandic libraries using leitir.is
 * find entries via ISBN and other identifiers
 * edit entries regardless of in which BibTeX file they are saved
 * list all books in all or one BibTeX file(s)
@@ -66,5 +67,5 @@ if you want, you can now add more databases and link them to different functions
 * create NFC reading app based on https://github.com/scriptotek/nfcbookscanner
 * auto add books when not found on get (useful for e.g. laws)
 * make a link for every installed plugin (e.g. all googlebook imports will be imported to googlebooks link)
-* import from leitir.is
+* ub search
  

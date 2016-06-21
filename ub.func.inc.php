@@ -53,6 +53,15 @@ function array_shifted ($a) {
 	return $a;
 }
 
+function str_rreplace($search, $replace, $subject) {
+	$pos = strrpos($subject, $search);
+	if($pos !== false) {
+		$subject = substr_replace($subject, $replace, $pos, strlen($search));
+	}
+	return $subject;
+}
+
+
 //// autoloader
 
 spl_autoload_register(function($class) {
@@ -134,7 +143,7 @@ function ub_config () {
 			}
 		}
 		if (!isset($c['plugins'])) {
-			$c['plugins'] = ['HeBIS', 'GoogleBooks'];
+			$c['plugins'] = ['HeBIS', 'GoogleBooks', 'LeitirIS'];
 		}
 		$GLOBALS['ub_config'] = $c;
 		register_shutdown_function('ub_config_save');
@@ -211,7 +220,7 @@ function ub_get_val_from_bibtex($bibtex, $getkey) {
 		return $ret;
 	}
 	foreach(explode("\n", $bibtex) as $line) {
-		$p = preg_match('/^\s*(\w+)\s*=\s*({\s*(.+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
+		$p = preg_match('/^\s*(\w+)\s*=\s*("\s*(.+)\s*"|{\s*(.+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
 		if (count($pat) < 4) continue;
 		$key = $pat[1];
 		$val = $pat[3];
@@ -285,7 +294,7 @@ function ub_get_book($identifier, $options) {
 				$inbook = true;
 				$curbook = $line;
 			} else if ($inbook && !$yupthisisit) {
-				$p = preg_match('/^\s*(\w+)\s*=\s*({\s*([^}]+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
+				$p = preg_match('/^\s*(\w+)\s*=\s*("\s*(.+)\s*"|{\s*([^}]+)\s*}|(\d+))\s*,?\s*$/i', $line, $pat);
 				if (count($pat) < 4) continue;
 				$key = $pat[1];
 				$val = $pat[3];
@@ -306,9 +315,14 @@ function ub_ris2bib($riscontent) {
 	$tmpni = tempnam(sys_get_temp_dir(), 'ubris2bib');
 	$tmpno = tempnam(sys_get_temp_dir(), 'ubris2bib');
 	file_put_contents($tmpni, $riscontent);
-	exec('cat ' . escapeshellarg($tmpni) . ' |ris2xml 2>/dev/null|xml2bib 2>/dev/null > ' . escapeshellarg($tmpno));
+	exec('cat ' . escapeshellarg($tmpni) . ' |ris2xml -un 2>/dev/null | xml2bib -nb	2>/dev/null > ' . escapeshellarg($tmpno));
 	return file_get_contents($tmpno);
 }
+
+function ub_raw_isbn($isbn) {
+	return Isbn::clean($isbn);
+}
+
 
 function ub_execute (array $command, array $options = []) {
 	$options = array_merge([
@@ -724,3 +738,4 @@ function ub_execute_get (array $command, array $options) {
 		return $book;
 	}
 }
+

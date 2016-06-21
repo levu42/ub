@@ -3,11 +3,7 @@
 class GoogleBooks implements IUBPlugin {
 
 	protected static function rawISBN($i) {
-		if (preg_match('/^[\d\sx\-]+$/i', $i)) {
-			return preg_replace('/[\s\-]+/i', '', $i);
-		} else {
-			return $i;
-		}
+		return ub_raw_isbn($i);
 	}
 
 	public static function forme($onlineidentifier) {
@@ -63,3 +59,4 @@ class GoogleBooks implements IUBPlugin {
 	}
 
 }
+
